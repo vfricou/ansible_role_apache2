@@ -1,0 +1,27 @@
+---
+- name: "apache | modules | disable modules"
+  apache2_module:
+    name: '{{ item }}'
+    state: absent
+    ignore_configcheck: 'yes'
+  notify: restart apache2
+  with_items:
+    - mpm_event
+
+- name: "apache | modules | enable modules"
+  apache2_module:
+    name: '{{ item }}'
+    state: present
+    ignore_configcheck: 'yes'
+  notify: restart apache2
+  with_items:
+    - mpm_prefork
+    - php7.3
+    - ssl
+    - rewrite
+    - headers
+    - include
+    - proxy
+    - proxy_http
+    - proxy_http2
+    - http2

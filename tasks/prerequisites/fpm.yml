@@ -1,0 +1,19 @@
+---
+- name: "prerequisites | fpm | disable php fpm"
+  block:
+    - name: "prerequisites | fpm | stop php fpm"
+      ansible.builtin.systemd:
+        name: php7.3-fpm
+        state: stopped
+        enabled: no
+      when:
+        - ansible_facts['services']['php7.3-fpm.service']['state'] == 'running' or
+          ansible_facts['services']['php7.3-fpm.service']['status'] == 'enabled'
+
+    - name: apache_pre | disable php fpm
+      systemd:
+        name: php7.3-fpm
+        state: stopped
+        enabled: no
+  when:
+    - "'php-fpm' in ansible_facts.packages"

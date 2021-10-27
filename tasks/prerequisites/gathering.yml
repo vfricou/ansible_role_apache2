@@ -1,0 +1,7 @@
+---
+- name: "prerequisites | gathering | retrieve service facts"
+  ansible.builtin.service_facts:
+
+- name: "prerequisites | gathering | retrieve packages facts"
+  ansible.builtin.package_facts:
+    manager: "auto"

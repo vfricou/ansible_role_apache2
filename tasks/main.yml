@@ -1,0 +1,20 @@
+---
+# @meta author: Vincent Fricou
+# @meta description: Deploy and/or configure mariadb server
+
+- name: "import validator and prerequisites tasks"
+  block:
+    - name: "import validator tasks"
+      ansible.builtin.import_tasks: validator/check_os.yml
+    - name: "import prerequisites tasks"
+      ansible.builtin.import_tasks: prerequisites/main.yml
+  tags:
+    - always
+
+- name: "import apache tasks"
+  ansible.builtin.import_tasks: apache/main.yml
+
+- name: "import logrotate tasks"
+  ansible.builtin.import_tasks: logrotate/main.yml
+  tags:
+    - always

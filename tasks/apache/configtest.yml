@@ -1,0 +1,18 @@
+---
+- name: "apache | configtest | perform config test"
+  ansible.builtin.command: apachectl configtest
+  register: config_test
+  changed_when: config_test.rc > 1000
+  failed_when: config_test.rc > 0
+  notify: reload apache2
+  when: ansible_distribution == 'Debian' or
+        ansible_distribution == 'Ubuntu'
+
+- name: "apache | configtest | perform config test"
+  ansible.builtin.command: apachectl configtest
+  register: config_test
+  changed_when: config_test.rc > 1000
+  failed_when: config_test.rc > 0
+  notify: reload httpd
+  when: ansible_distribution == 'Rocky' or
+        ansible_distribution == 'RedHat'

@@ -1,0 +1,81 @@
+<VirtualHost *:80>
+    ServerAdmin admin@example.org
+    ServerName servername.example.org
+{% if item.mode != 'proxy' %}
+    DocumentRoot /srv/web
+{% endif %}
+{% if item.scheme == 'https' %}
+
+    RewriteEngine on
+    RewriteCond %{SERVER_PORT} !^443$
+    RewriteRule ^/(.*)$ https://%{SERVER_NAME}/$1
+
+{% endif %}
+
+    # Prevent access to version control folders
+    <DirectoryMatch "/\.(git|svn|hg)">
+      Require all denied
+    </DirectoryMatch>
+
+{% if item.mode == 'proxy' %}
+    ProxyPass / http://servername.example.org/
+{% else %}
+    <Directory /srv/web/>
+        Options FollowSymlinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+{% endif %}
+
+    ErrorLog ${APACHE_LOG_DIR}/vhost/servername.example.org_error.log
+    CustomLog ${APACHE_LOG_DIR}/vhost/servername.example.org_access.log combined
+</VirtualHost>
+{% if item.scheme == 'https' %}
+
+<VirtualHost *:443>
+    ServerAdmin admin@example.org
+    ServerName servername.example.org
+{% if item.mode != 'proxy' %}
+    DocumentRoot /srv/web
+{% endif %}
+
+    Protocols h2 http/1.1
+    SSLEngine On
+    SSLProxyEngine On
+    SSLCertificateFile /path/to/certificate/servername.example.org.crt
+    SSLCertificateKeyFile /path/to/certificate/servername.example.org.key
+    SSLCACertificateFile /path/to/certificate/ca_certificate.pem
+    SSLProtocol all -SSLv3 -TLSv1 -TLSv1.1
+    SSLCipherSuite          ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256
+    SSLOpenSSLConfCmd       DHParameters "dh.pem"
+    SSLCompression          off
+    SSLSessionTickets       off
+    SSLHonorCipherOrder     off
+    SSLSessionTickets       off
+
+    # OCSP Stapling, only in httpd 2.3.3 and later
+    #SSLUseStapling          on
+    #SSLStaplingResponderTimeout 5
+    #SSLStaplingReturnResponderErrors off
+
+    Header always set Strict-Transport-Security "max-age=15768000"
+
+    # Prevent access to version control folders
+    <DirectoryMatch "/\.(git|svn|hg)">
+      Require all denied
+    </DirectoryMatch>
+
+{% if item.mode == 'proxy' %}
+    ProxyPass / http://servername.example.org/
+{% else %}
+    <Directory /srv/web/>
+        Options FollowSymlinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+{% endif %}
+
+    ErrorLog ${APACHE_LOG_DIR}/vhost/servername.example.org_error.log
+    CustomLog ${APACHE_LOG_DIR}/vhost/servername.example.org_access.log combined
+</VirtualHost>
+{% endif %}

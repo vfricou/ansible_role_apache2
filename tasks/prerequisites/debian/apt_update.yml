@@ -1,0 +1,4 @@
+---
+- name: "prerequisites | debian | apt_update | update local cache"
+  ansible.builtin.apt:
+    update_cache: yes

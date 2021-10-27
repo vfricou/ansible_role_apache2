@@ -1,0 +1,20 @@
+/var/log/apache2/vhost/*.log {
+        daily
+        missingok
+        rotate {{ apache2_logrotate_vhost_retention }}
+        compress
+        notifempty
+        create 640 root adm
+        sharedscripts
+        olddir /var/log/apache2/archives/vhost
+        postrotate
+                if invoke-rc.d apache2 status > /dev/null 2>&1; then \
+                    invoke-rc.d apache2 reload > /dev/null 2>&1; \
+                fi;
+        endscript
+        prerotate
+                if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
+                  run-parts /etc/logrotate.d/httpd-prerotate; \
+                fi; \
+        endscript
+}

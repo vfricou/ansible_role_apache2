@@ -1,0 +1,5 @@
+---
+- name: "apache | debian | import install tasks"
+  ansible.builtin.import_tasks: install.yml
+  tags:
+    - install

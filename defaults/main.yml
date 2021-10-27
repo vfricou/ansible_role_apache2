@@ -1,0 +1,6 @@
+---
+# @var apache_custom_pkg: '' # Specify custom packages to install
+# @var apache2_logrotate_general_retention: '15' # Specify apache2 general log rotation history
+apache2_logrotate_general_retention: '15'
+# @var apache2_logrotate_vhost_retention: '365' # Specify apache2 vhost log rotation history
+apache2_logrotate_vhost_retention: '365'

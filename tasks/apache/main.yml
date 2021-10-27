@@ -1,0 +1,20 @@
+---
+#- name: "apache | import rhel tasks"
+#  ansible.builtin.import_tasks: rhel/main.yml
+#  when: ansible_distribution == 'Rocky' or
+#        ansible_distribution == 'RedHat'
+
+- name: "apache | import debian tasks"
+  ansible.builtin.import_tasks: debian/main.yml
+  when: ansible_distribution == 'Debian' or
+        ansible_distribution == 'Ubuntu'
+
+- name: "apache | import postinstall tasks"
+  ansible.builtin.import_tasks: postinstall.yml
+  tags:
+    - install
+
+- name: "apache | import configtest tasks"
+  ansible.builtin.import_tasks: configtest.yml
+  tags:
+    - always

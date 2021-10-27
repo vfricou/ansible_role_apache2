@@ -1,0 +1,15 @@
+---
+- name: "apache | debian | install | install mandatory apache collection"
+  ansible.builtin.apt:
+    name: "{{ debian['packages'] }}"
+    state: present
+    dpkg_options: "{{ debian['dpkg_opts'] }}"
+  notify: restart apache2
+
+- name: "apache | debian | install | install user defined apache packages"
+  ansible.builtin.apt:
+    name: "{{ apache_custom_pkg }}"
+    state: present
+    dpkg_options: "{{ debian['dpkg_opts'] }}"
+  notify: restart apache2
+  when: apache_custom_pkg is defined

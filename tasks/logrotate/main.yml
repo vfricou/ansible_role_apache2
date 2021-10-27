@@ -1,0 +1,16 @@
+---
+- name: "logrotate | deploy general logrotate config"
+  template:
+    src: logrotate/apache2_general.j2
+    dest: /etc/logrotate.d/apache2
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+
+- name: "logrotate | deploy vhost logrotate config"
+  template:
+    src: logrotate/apache2_vhost.j2
+    dest: /etc/logrotate.d/apache2-vhost
+    owner: 'root'
+    group: 'root'
+    mode: '0644'

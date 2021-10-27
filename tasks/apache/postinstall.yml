@@ -1,0 +1,32 @@
+---
+- name: "apache | postinstall | ensure required directories exist"
+  ansible.builtin.file:
+    path: '{{ item }}'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+    state: directory
+  with_items:
+    - /etc/apache2/sites-available/templates/
+
+- name: "apache | postinstall | deploy vhost template"
+  ansible.builtin.template:
+    dest: '/etc/apache2/sites-available/templates/tpl-{{ item.mode }}-{{ item.scheme }}.conf'
+    src: 'apache2/vhost.conf.j2'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  with_items:
+    - {scheme: 'http', mode: 'proxy'}
+    - {scheme: 'https', mode: 'proxy'}
+    - {scheme: 'http', mode: 'webserver'}
+    - {scheme: 'https', mode: 'webserver'}
+
+- name: "apache | postinstall | update security token"
+  ansible.builtin.replace:
+    path: '/etc/apache2/conf-available/security.conf'
+    regexp: '{{ item.regexp }}'
+    replace: '{{ item.replace }}'
+  with_items:
+    - {regexp: '^ServerTokens OS$', replace: 'ServerTokens Prod'}
+    - {regexp: '^ServerSignature On', replace: 'ServerSignature Off'}

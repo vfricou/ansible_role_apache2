@@ -1,0 +1,17 @@
+---
+- name: "prerequisites | import packages requirements"
+  ansible.builtin.import_tasks: packages.yml
+
+- name: "prerequisites | import gathering operations"
+  ansible.builtin.import_tasks: gathering.yml
+
+- name: "prerequisites | import debian tasks"
+  ansible.builtin.import_tasks: debian/main.yml
+  when: ansible_distribution == 'Debian' or
+        ansible_distribution == 'Ubuntu'
+
+- name: "prerequisites | import fpm operations"
+  ansible.builtin.import_tasks: fpm.yml
+
+- name: "prerequisites | import folders operations"
+  ansible.builtin.import_tasks: folders.yml

@@ -1,0 +1,3 @@
+---
+- name: "prerequisites | debian | import apt update tasks"
+  ansible.builtin.import_tasks: apt_update.yml

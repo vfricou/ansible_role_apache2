@@ -1,0 +1,13 @@
+---
+- name: "prerequisites | folders | ensure required directories exists"
+  ansible.builtin.file:
+    path: '{{ item }}'
+    owner: 'root'
+    group: 'adm'
+    mode: '0755'
+    state: directory
+  with_items:
+    - '/var/log/apache2'
+    - '/var/log/apache2/archives'
+    - '/var/log/apache2/vhost'
+    - '/var/log/apache2/archives/vhost'

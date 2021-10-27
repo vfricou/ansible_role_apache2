@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  role_name: "apache2"
+  namespace: "vfricou"
+  author: Vincent FRICOU
+  description: 'Install and/or configure apache2 on Linux hosts'
+  license: MIT
+  min_ansible_version: 2.9
+  platforms:
+    - name: Debian
+      versions:
+        - buster
+        - bullseye
+
+dependencies: []
