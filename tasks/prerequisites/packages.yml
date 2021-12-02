@@ -3,4 +3,4 @@
   ansible.builtin.apt:
     name: 'python3-apt'
     state: present
-    dpkg_options: '{{ dpkg_opts }}'
+    dpkg_options: "{{ debian['dpkg_opts'] }}"

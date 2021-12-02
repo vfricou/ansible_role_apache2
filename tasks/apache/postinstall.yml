@@ -1,17 +1,15 @@
 ---
 - name: "apache | postinstall | ensure required directories exist"
   ansible.builtin.file:
-    path: '{{ item }}'
+    path: '{{ apache_vhost_tpl_folder }}'
     owner: 'root'
     group: 'root'
     mode: '0755'
     state: directory
-  with_items:
-    - /etc/apache2/sites-available/templates/
 
-- name: "apache | postinstall | deploy vhost template"
+- name: "apache | postinstall | deploy proxy vhost template"
   ansible.builtin.template:
-    dest: '/etc/apache2/sites-available/templates/tpl-{{ item.mode }}-{{ item.scheme }}.conf'
+    dest: '{{ apache_vhost_tpl_folder }}/tpl-{{ item.mode }}-{{ item.scheme }}.conf'
     src: 'apache2/vhost.conf.j2'
     owner: 'root'
     group: 'root'
@@ -19,12 +17,23 @@
   with_items:
     - {scheme: 'http', mode: 'proxy'}
     - {scheme: 'https', mode: 'proxy'}
-    - {scheme: 'http', mode: 'webserver'}
-    - {scheme: 'https', mode: 'webserver'}
+
+- name: "apache | postinstall | deploy vhost template"
+  ansible.builtin.template:
+    dest: '{{ apache_vhost_tpl_folder }}/tpl-{{ item.mode }}-php_{{ item.php }}-{{ item.scheme }}.conf'
+    src: 'apache2/vhost.conf.j2'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  with_items:
+    - {scheme: 'http', mode: 'webserver', php: 'embeed'}
+    - {scheme: 'https', mode: 'webserver', php: 'embeed'}
+    - {scheme: 'http', mode: 'webserver', php: 'fpm'}
+    - {scheme: 'https', mode: 'webserver', php: 'fpm'}
 
 - name: "apache | postinstall | update security token"
   ansible.builtin.replace:
-    path: '/etc/apache2/conf-available/security.conf'
+    path: '{{ apache_cfg_folder }}/security.conf'
     regexp: '{{ item.regexp }}'
     replace: '{{ item.replace }}'
   with_items:

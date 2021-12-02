@@ -1,20 +1,23 @@
 ---
-#- name: "apache | import rhel tasks"
-#  ansible.builtin.import_tasks: rhel/main.yml
-#  when: ansible_distribution == 'Rocky' or
-#        ansible_distribution == 'RedHat'
-
 - name: "apache | import debian tasks"
-  ansible.builtin.import_tasks: debian/main.yml
+  block:
+    - name: "apache | debian | import specific tasks"
+      ansible.builtin.import_tasks: debian/main.yml
+
+    - name: "apache | debian | perform postinstall tasks"
+      ansible.builtin.include_tasks: postinstall.yml
+      vars:
+        apache_vhost_tpl_folder: '/etc/apache2/sites-available/templates'
+        apache_cfg_folder: '/etc/apache2/conf-available'
+      tags:
+        - install
+
+    - name: "apache | debian | validate apache configuration"
+      ansible.builtin.import_tasks: configtest.yml
+      vars:
+        apache_name: 'apache2'
+      tags:
+        - always
+
   when: ansible_distribution == 'Debian' or
         ansible_distribution == 'Ubuntu'
-
-- name: "apache | import postinstall tasks"
-  ansible.builtin.import_tasks: postinstall.yml
-  tags:
-    - install
-
-- name: "apache | import configtest tasks"
-  ansible.builtin.import_tasks: configtest.yml
-  tags:
-    - always
