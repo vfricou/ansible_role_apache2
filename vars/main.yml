@@ -14,3 +14,12 @@ debian:
     - libapache2-mod-webauthldap
     - libapache2-mod-fcgid
     - libapache2-reload-perl
+
+rhel:
+  packages:
+    - httpd
+    - mod_fcgid
+    - mod_ldap
+    - mod_security
+    - mod_ssl
+    - mod_perl

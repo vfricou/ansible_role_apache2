@@ -1,0 +1,13 @@
+---
+- name: "apache | rhel | install | install mandatory apache collection"
+  ansible.builtin.dnf:
+    name: "{{ rhel['packages'] }}"
+    state: present
+  notify: restart httpd
+
+- name: "apache | rhel | install | install user defined apache packages"
+  ansible.builtin.dnf:
+    name: "{{ apache_custom_pkg }}"
+    state: present
+  notify: restart httpd
+  when: apache_custom_pkg is defined
