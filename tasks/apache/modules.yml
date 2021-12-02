@@ -1,22 +1,55 @@
 ---
-- name: "apache | modules | disable modules"
-  apache2_module:
-    name: '{{ item }}'
-    state: absent
-    ignore_configcheck: 'yes'
-  notify: restart apache2
-  with_items:
-    - mpm_event
+- name: "apache | modules | disable module for fpm"
+  block:
+    - name: "apache | modules | disable mpm_event modules"
+      community.general.apache2_module:
+        name: '{{ item }}'
+        state: absent
+        ignore_configcheck: 'yes'
+      notify: restart apache2
+      with_items:
+        - mpm_event
+
+    - name: "apache | modules | enable mpm_prefork modules"
+      community.general.apache2_module:
+        name: '{{ item }}'
+        state: present
+        ignore_configcheck: 'yes'
+      notify: restart apache2
+      with_items:
+        - mpm_prefork
+  when:
+    - apache2_with_fpm
+
+- name: "apache | modules | enable  module for fpm"
+  block:
+    - name: "apache | modules | enable mpm_event modules"
+      community.general.apache2_module:
+        name: '{{ item }}'
+        state: present
+        ignore_configcheck: 'yes'
+      notify: restart apache2
+      with_items:
+        - mpm_event
+
+    - name: "apache | modules | disable mpm_prefork modules"
+      community.general.apache2_module:
+        name: '{{ item }}'
+        state: absent
+        ignore_configcheck: 'yes'
+      notify: restart apache2
+      with_items:
+        - mpm_prefork
+  when:
+    - not apache2_with_fpm
 
 - name: "apache | modules | enable modules"
-  apache2_module:
+  community.general.apache2_module:
     name: '{{ item }}'
     state: present
     ignore_configcheck: 'yes'
   notify: restart apache2
   with_items:
-    - mpm_prefork
-    - php7.3
     - ssl
     - rewrite
     - headers
@@ -24,4 +57,5 @@
     - proxy
     - proxy_http
     - proxy_http2
+    - proxy_fcgi
     - http2

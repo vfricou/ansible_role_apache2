@@ -73,6 +73,11 @@
         AllowOverride All
         Require all granted
     </Directory>
+{% if item.php is defined and item.php == 'fpm' %}
+    <FilesMatch \.php$>
+        SetHandler "proxy:fcgi://127.0.0.1:9000"
+    </FilesMatch>
+{% endif %}
 {% endif %}
 
     ErrorLog ${APACHE_LOG_DIR}/vhost/servername.example.org_error.log

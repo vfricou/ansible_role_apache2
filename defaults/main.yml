@@ -4,3 +4,5 @@
 apache2_logrotate_general_retention: '15'
 # @var apache2_logrotate_vhost_retention: '365' # Specify apache2 vhost log rotation history
 apache2_logrotate_vhost_retention: '365'
+# @var apache2_with_fpm: true # Speficy if apache2 will work with fpm
+apache2_with_fpm: false
